@@ -1,11 +1,64 @@
 import React, {useState} from 'react';
 import { SafeAreaView, View, Text, Image, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
+import {
+  sendotp_route,
+} from "../utilities/API_routes";
 
-export default function SignUp({ navigation}) {
-  const [form, setForm] = useState({
-    email: '',
-    password: '',
-  });
+export default function SignUp({ navigation, route: x }) {
+  const { form, setForm } = x.params
+  // const { form, setForm } = route.params || {};
+  // const [form, setForm] = useState({
+  //   name: '',
+  //   email: '',
+  //   phoneNumber: '',
+  //   otp: '',
+  //   isOtpSent: false,
+  //   isLoading: false,
+  // });
+
+  const handleValidation = () => {
+    const { name, email, phoneNumber } = form;
+    if (email === '') {
+      Alert.alert('Error', 'Email is required!');
+      return false;
+    } else if (name === '') {
+      Alert.alert('Error', 'Name is required!');
+      return false;
+    } else if (phoneNumber === '') {
+      Alert.alert('Error', 'Phone number is required!')
+      return false;
+    } else if (!/^\d{10}$/.test(phoneNumber)) {
+      Alert.alert('Error', 'Phone number should have exactly 10 digits!');
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async () => {
+    if (!handleValidation()) return;
+
+    setForm({ ...form, isLoading: true });
+
+    try {
+      const { email } = form;
+      const data = { email };
+
+      const response = await axios.post(sendotp_route, data);
+
+      if (response.status !== 200) {
+        Alert.alert('Error', 'Failed to send OTP');
+      } else {
+        Alert.alert('Success', 'OTP sent successfully to your email.\nPlease check Spam too.');
+        navigation.navigate('OTPScreen');
+      }
+
+      setForm({ ...form, isOtpSent: true });
+    } catch (err) {
+      Alert.alert('Error', 'Failed to create an account. Please try again later.');
+    }
+
+    setForm({ ...form, isLoading: false });
+  };
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#bdf'}}>
@@ -19,7 +72,6 @@ export default function SignUp({ navigation}) {
 
           <Text style={styles.title}>
             Sign Up
-             {/* to <Text style={{color:'#075eec'}}>MyApp</Text> */}
           </Text>
           <Text style={styles.subtitle}>
           Explore, Grow, Begin Now!
@@ -27,7 +79,7 @@ export default function SignUp({ navigation}) {
         </View>
 
         <View style={styles.form}>
-        <View style={styles.input}>
+          <View style={styles.input}>
             <Text style={styles.inputLabel}>Name</Text>
 
             <TextInput
@@ -36,8 +88,8 @@ export default function SignUp({ navigation}) {
               style={styles.inputFeild}
               placeholder="John Doe"
               placeholderTextColor="#ccc"
-              value={form.email}
-              onChangeText={(email) => setForm({ ...form, email })}
+              value={form.name}
+              onChangeText={(name) => setForm({ ...form, name })}
             />
           </View>
 
@@ -64,8 +116,8 @@ export default function SignUp({ navigation}) {
               style={styles.inputFeild}
               placeholder="+91 9876543210"
               placeholderTextColor="#ccc"
-              value={form.password}
-              onChangeText={(password) => setForm({ ...form, password })}
+              value={form.phoneNumber}
+              onChangeText={(phoneNumber) => setForm({ ...form, phoneNumber })}
             />
           </View>
 
@@ -73,7 +125,7 @@ export default function SignUp({ navigation}) {
             <TouchableOpacity  
               onPress={() => {
                 // handle onPress
-                navigation.navigate('OTPScreen')
+                handleSubmit()
               }}>
               <View style={styles.btn}>
                 <Text style={styles.btnText}>Sign up</Text>
@@ -83,17 +135,13 @@ export default function SignUp({ navigation}) {
           
           <Text style={styles.formFooter}>
             Already have an account?
-              <Text onPress={() => {navigation.navigate('Login')}} > Sign in</Text>
+              <Text style={{color: '#075eec'}} onPress={() => {navigation.navigate('Login')}} > Sign in</Text>
           </Text>
         </View>
       </View>
     </SafeAreaView>
   );
 }
-{/* <Button
-  title="Go to Signup"
-  onPress={() => navigation.navigate('Signup')}
-/> */}
 
 const styles = StyleSheet.create({
   container: {

@@ -4,8 +4,45 @@ import { SafeAreaView, View, Text, Image, StyleSheet, TextInput, TouchableOpacit
 export default function Login({ navigation}) {
   const [form, setForm] = useState({
     email: '',
-    password: '',
+    otp: '',
+    isOtpSent: false,
+    isLoading: false,
   });
+
+  const handleValidation = () => {
+    const { email } = form;
+    if (email === '') {
+      Alert.alert('Error', 'Email is required!');
+      return false;
+    }
+    return true;
+  }
+  
+  const handleSubmit = async () => {
+    if (!handleValidation()) return;
+
+    setForm({ ...form, isLoading: true });
+
+    try {
+      const { email } = form;
+      const data = { email };
+
+      const response = await axios.post(sendotp_route, data);
+
+      if (response.status !== 200) {
+        Alert.alert('Error', 'Failed to send OTP');
+      } else {
+        Alert.alert('Success', 'OTP sent successfully to your email.\nPlease check Spam too.');
+        navigation.navigate('OTPScreen');
+      }
+
+      setForm({ ...form, isOtpSent: true });
+    } catch (err) {
+      Alert.alert('Error', 'Failed to login. Please try again later.');
+    }
+
+    setForm({ ...form, isLoading: false });
+  };
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#bdf'}}>
@@ -41,24 +78,11 @@ export default function Login({ navigation}) {
             />
           </View>
 
-          {/* <View style={styles.input}>
-            <Text style={styles.inputLabel}>Password</Text>
-
-            <TextInput
-              secureTextEntry={true}
-              style={styles.inputFeild}
-              placeholder="********"
-              placeholderTextColor="#ccc"
-              value={form.password}
-              onChangeText={(password) => setForm({ ...form, password })}
-            />
-          </View> */}
-
           <View style={styles.formAction}>
             <TouchableOpacity  
               onPress={() => {
                 // handle onPress
-                navigation.navigate('OTPScreen');
+                handleSubmit()
               }}>
               <View style={styles.btn}>
                 <Text style={styles.btnText}>Sign in</Text>
@@ -67,10 +91,8 @@ export default function Login({ navigation}) {
           </View>
           
           <Text style={styles.formFooter}>
-            Don't have an account? 
-            {/* <TouchableOpacity // stylle={{marginTop: 'auto'}}> */}
-              <Text onPress={() => {navigation.navigate('Signup')}} > Sign up</Text>
-            {/* </TouchableOpacity> */}
+            Don't have an account?
+              <Text style={{color: '#075eec'}} onPress={() => {navigation.navigate('Signup')}} > Sign up</Text>
           </Text>
         </View>
       </View>
@@ -133,9 +155,6 @@ const styles = StyleSheet.create({
   },
   formAction: {
     marginVertical: 24,
-    // flexDirection: 'row',
-    // alignItems: 'center',
-    // justifyContent: 'center',
   },
   formFooter: {
     fontSize: 18,
@@ -162,3 +181,4 @@ const styles = StyleSheet.create({
   },
 
 });
+
