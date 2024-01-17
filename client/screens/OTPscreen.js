@@ -19,7 +19,7 @@ export default function OTPScreen({ navigation, route: x }) {
 
   // const route = useRoute();
   // const source = route.params?.source || 'Unknown';
-
+// karan
   const signUp = async () => {
     
     const { name, email, phoneNumber } = form;
