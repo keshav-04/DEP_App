@@ -12,14 +12,14 @@ import Profile from './screens/profileScreen';
 const Stack = createNativeStackNavigator();
 
 function App() {
-  const [form, setForm] = useState({
-    name: '',
-    email: '',
-    phoneNumber: '',
-    otp: '',
-    isOtpSent: false,
-    isLoading: false,
-  });
+  // const [form, setForm] = useState({
+  //   name: '',
+  //   email: '',
+  //   phoneNumber: '',
+  //   otp: '',
+  //   isOtpSent: false,
+  //   isLoading: false,
+  // });
   
   return (
     <NavigationContainer>
@@ -28,14 +28,14 @@ function App() {
         <Stack.Screen
           name="Signup"
           component={SignUp}
-          initialParams={{ form, setForm }}
-          options={{ headerShown: false }}
+          // initialParams={{ form, setForm }}
+          // options={{ headerShown: false }}
         />
         <Stack.Screen
           name="OTPScreen"
           component={OTPScreen}
-          initialParams={{ form, setForm }}
-          options={{ headerShown: false }}
+          // initialParams={{ form, setForm }}
+          // options={{ headerShown: false }}
         />
         {/* <Stack.Screen name="" component={} /> */}
         <Stack.Screen name="homeScreen" component={HomeScreen} />

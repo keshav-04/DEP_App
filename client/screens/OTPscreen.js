@@ -6,7 +6,8 @@ import {
   verifyotp_route,
 } from "../utilities/API_routes";
 
-export default function OTPScreen({ navigation }) {
+export default function OTPScreen({ navigation, route: x }) {
+  // const { form, setForm } = x.params
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -16,8 +17,8 @@ export default function OTPScreen({ navigation }) {
     isLoading: false,
   });
 
-  const route = useRoute();
-  const source = route.params?.source || 'Unknown';
+  // const route = useRoute();
+  // const source = route.params?.source || 'Unknown';
 
   const signUp = async () => {
     

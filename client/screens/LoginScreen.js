@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { SafeAreaView, View, Text, Image, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 
-export default function Login({ navigation}) {
+export default function Login({ navigation }) {
   const [form, setForm] = useState({
     email: '',
     otp: '',

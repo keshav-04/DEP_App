@@ -1,10 +1,13 @@
 import React, {useState} from 'react';
 import { SafeAreaView, View, Text, Image, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
+import axios from 'axios';
 import {
   sendotp_route,
 } from "../utilities/API_routes";
 
 export default function SignUp({ navigation }) {
+  // const { form, setForm } = x.params
+  // const { form, setForm } = route.params || {};
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -13,6 +16,7 @@ export default function SignUp({ navigation }) {
     isOtpSent: false,
     isLoading: false,
   });
+  // const [isLoading, setisLoading] = useState(false);
 
   const handleValidation = () => {
     const { name, email, phoneNumber } = form;
@@ -34,28 +38,30 @@ export default function SignUp({ navigation }) {
 
   const handleSubmit = async () => {
     if (!handleValidation()) return;
-
-    setForm({ ...form, isLoading: true });
-
+    
+    // setForm({ ...form, isLoading: true });
+    // setisLoading(true);
+    
     try {
       const { email } = form;
       const data = { email };
-
+      
+      console.log("here23")
       const response = await axios.post(sendotp_route, data);
-
-      if (response.status !== 200) {
+      // setisLoading(false);
+      // Alert.alert('Error', ":A");
+      if (response.data.status === 'false') {
         Alert.alert('Error', 'Failed to send OTP');
       } else {
         Alert.alert('Success', 'OTP sent successfully to your email.\nPlease check Spam too.');
+        setForm({ ...form, isOtpSent: true });
         navigation.navigate('OTPScreen');
       }
-
-      setForm({ ...form, isOtpSent: true });
     } catch (err) {
-      Alert.alert('Error', 'Failed to create an account. Please try again later.');
+      // setisLoading(false);
+      Alert.alert('Error', err.message);
     }
-
-    setForm({ ...form, isLoading: false });
+    // setForm({ ...form, isLoading: false });
   };
 
   return (
@@ -115,7 +121,7 @@ export default function SignUp({ navigation }) {
               placeholder="+91 9876543210"
               placeholderTextColor="#ccc"
               value={form.phoneNumber}
-              onChangeText={(phoneNumber) => setForm({ ...form, phoneNumber })}
+              onChangeText={(phoneNumber) => setForm({ ...form, phoneNumber: String(phoneNumber) })}
             />
           </View>
 
@@ -124,6 +130,7 @@ export default function SignUp({ navigation }) {
               onPress={() => {
                 // handle onPress
                 handleSubmit()
+                // navigation.navigate('OTPScreen')
               }}>
               <View style={styles.btn}>
                 <Text style={styles.btnText}>Sign up</Text>
