@@ -39,7 +39,6 @@ function App() {
         />
         {/* <Stack.Screen name="" component={} /> */}
         <Stack.Screen name="homeScreen" component={HomeScreen} />
-        <Stack.Screen name="profileScreen" component={Profile} />
       </Stack.Navigator>
     </NavigationContainer>
   );
