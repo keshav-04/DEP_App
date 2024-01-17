@@ -2,19 +2,19 @@ require('dotenv').config();
 const nodemailer = require('nodemailer');
 const express = require('express');
 const cors = require('cors');
-// const mongoose = require('mongoose')
-// mongoose.connect(process.env.MONGO_URL).then(()=>{
-//     console.log("Connected Established!!")
+const mongoose = require('mongoose')
+mongoose.connect(process.env.MONGO_URL).then(()=>{
+    console.log("Connected Established!!")
 
-// }).catch((err)=>{
-//     console.log("Error connecting to MongoDB",err);
-// })
+}).catch((err)=>{
+    console.log("Error connecting to MongoDB",err);
+})
 
-// const db = mongoose.connection;
-// db.on("error", console.error.bind(console, "connection error:"));   //checking for errors
-// db.once("open", () => {
-//     console.log("Database connected");      //successfully connected
-// });
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "connection error:"));   //checking for errors
+db.once("open", () => {
+    console.log("Database connected");      //successfully connected
+});
 const app = express();
 
 
@@ -24,7 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-app.use(cors());
+// app.use(cors());
 
 
 // const generateToken = require('./src/utils/generateToken.js');
@@ -129,6 +129,53 @@ app.post('/verifyotp', async(req, res) => {
     return res.json({message: 'OTP verified successfully'});
 });
 
+app.post('/createuser', async(req, res) => {
+    const {firstName, lastName, username, email} = req.body;
+    if(!firstName || !lastName || !username || !email)
+    {
+        return res.json({status: "false", error: "All fields are required" });
+    }
+    const existingUser = await User.findOne({email});
+    if(existingUser)
+    {
+        return res.json({status: "false",  error: "Email already exists.\nLogin Instead." });
+    }
+
+    
+    let newUser = new User({firstName, lastName, username, email, token: "", photo: "", mobileNumber: "", address: {
+        houseNumber: "",
+        street: "",
+        city: "",
+        country: ""
+    },
+    occupation: "",
+    dob: null }); 
+    await newUser.save();
+    
+    const token = generateToken(newUser._id);
+    
+    const user = {
+        token,
+        photo: "",
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        username: newUser.username,
+        email: newUser.email,
+        mobileNumber: "",
+        address: {
+            houseNumber: "",
+            street: "",
+            city: "",
+            country: ""
+        },
+        occupation: "",
+        dob: newUser.dob,           //CHECK should be null/ any initial date
+    };
+
+    console.log(user);
+     
+    return res.status(200).json({message: 'User created successfully', user });
+});
 
 app.listen(port, () => {
     console.log(`Server listening on http://localhost:${port}`);

@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
-import { SafeAreaView, View, Text, Image, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
-import axios from 'axios';
+import { SafeAreaView, View, Text, Image, StyleSheet, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native';
+// import axios from 'axios';
 import {
   sendotp_route,
 } from "../utilities/API_routes";
+import { useRoute } from "@react-navigation/native";
 
 export default function SignUp({ navigation }) {
   // const { form, setForm } = x.params
@@ -16,7 +17,10 @@ export default function SignUp({ navigation }) {
     isOtpSent: false,
     isLoading: false,
   });
-  // const [isLoading, setisLoading] = useState(false);
+
+  const _route = useRoute();
+   
+  const [isLoading, setisLoading] = useState(false);
 
   const handleValidation = () => {
     const { name, email, phoneNumber } = form;
@@ -40,22 +44,31 @@ export default function SignUp({ navigation }) {
     if (!handleValidation()) return;
     
     // setForm({ ...form, isLoading: true });
-    // setisLoading(true);
+    setisLoading(true);
     
     try {
       const { email } = form;
       const data = { email };
       
       console.log("here23")
-      const response = await axios.post(sendotp_route, data);
-      // setisLoading(false);
-      // Alert.alert('Error', ":A");
-      if (response.data.status === 'false') {
+      // const response = await axios.post(sendotp_route, data);
+      const response = await fetch(sendotp_route, {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      // console.log("respomse", response)
+      const receivedData = await response.json();
+      // console.log("receivedData", receivedData)
+      setisLoading(false);
+      if (receivedData.status === 'false') {
         Alert.alert('Error', 'Failed to send OTP');
       } else {
         Alert.alert('Success', 'OTP sent successfully to your email.\nPlease check Spam too.');
         setForm({ ...form, isOtpSent: true });
-        navigation.navigate('OTPScreen');
+        navigation.navigate('OTPScreen', {...form});
       }
     } catch (err) {
       // setisLoading(false);
@@ -65,85 +78,87 @@ export default function SignUp({ navigation }) {
   };
 
   return (
+
     <SafeAreaView style={{flex: 1, backgroundColor: '#bdf'}}>
-      <View style= {styles.container}>
-        <View style={styles.header}>
-          <Image
-            source={require('../assets/welcome.png')}
-            style={styles.headerImg}
-            alt = "Welcome"
-          />
+      <ScrollView style={{marginBottom: 10}}>
+        <View style= {styles.container}>
+          <View style={styles.header}>
+            <Image
+              source={require('../assets/welcome.png')}
+              style={styles.headerImg}
+              alt = "Welcome"
+            />
 
-          <Text style={styles.title}>
-            Sign Up
-          </Text>
-          <Text style={styles.subtitle}>
-          Explore, Grow, Begin Now!
-          </Text>
+            <Text style={styles.title}>
+              Sign Up
+            </Text>
+            <Text style={styles.subtitle}>
+            Explore, Grow, Begin Now!
+            </Text>
+          </View>
+
+          <View style={styles.form}>
+            <View style={styles.input}>
+              <Text style={styles.inputLabel}>Name</Text>
+
+              <TextInput
+                autoCapitalize='words'
+                autoCorrect={false}
+                style={styles.inputFeild}
+                placeholder="John Doe"
+                placeholderTextColor="#ccc"
+                value={form.name}
+                onChangeText={(name) => setForm({ ...form, name })}
+              />
+            </View>
+
+            <View style={styles.input}>
+              <Text style={styles.inputLabel}>Email address</Text>
+
+              <TextInput
+                autoCapitalize='none'
+                autoCorrect={false}
+                keyboardType='email-address'
+                style={styles.inputFeild}
+                placeholder="john@example.com"
+                placeholderTextColor="#ccc"
+                value={form.email}
+                onChangeText={(email) => setForm({ ...form, email })}
+              />
+            </View>
+
+            <View style={styles.input}>
+              <Text style={styles.inputLabel}>Phone number</Text>
+
+              <TextInput
+                keyboardType='phone-pad'
+                style={styles.inputFeild}
+                placeholder="+91 9876543210"
+                placeholderTextColor="#ccc"
+                value={form.phoneNumber}
+                onChangeText={(phoneNumber) => setForm({ ...form, phoneNumber })}
+              />
+            </View>
+
+            <View style={styles.formAction}>
+              <TouchableOpacity  
+                onPress={() => {
+                  // handle onPress
+                  handleSubmit()
+                }}>
+                <View style={styles.btn}>
+                  <Text style={styles.btnText}>Sign up</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            
+            <Text style={styles.formFooter}>
+              Already have an account?
+                <Text style={{color: '#075eec'}} onPress={() => {navigation.navigate('Login')}} > Sign in</Text>
+            </Text>
+          </View>
         </View>
-
-        <View style={styles.form}>
-          <View style={styles.input}>
-            <Text style={styles.inputLabel}>Name</Text>
-
-            <TextInput
-              autoCapitalize='words'
-              autoCorrect={false}
-              style={styles.inputFeild}
-              placeholder="John Doe"
-              placeholderTextColor="#ccc"
-              value={form.name}
-              onChangeText={(name) => setForm({ ...form, name })}
-            />
-          </View>
-
-          <View style={styles.input}>
-            <Text style={styles.inputLabel}>Email address</Text>
-
-            <TextInput
-              autoCapitalize='none'
-              autoCorrect={false}
-              keyboardType='email-address'
-              style={styles.inputFeild}
-              placeholder="john@example.com"
-              placeholderTextColor="#ccc"
-              value={form.email}
-              onChangeText={(email) => setForm({ ...form, email })}
-            />
-          </View>
-
-          <View style={styles.input}>
-            <Text style={styles.inputLabel}>Phone number</Text>
-
-            <TextInput
-              keyboardType='phone-pad'
-              style={styles.inputFeild}
-              placeholder="+91 9876543210"
-              placeholderTextColor="#ccc"
-              value={form.phoneNumber}
-              onChangeText={(phoneNumber) => setForm({ ...form, phoneNumber: String(phoneNumber) })}
-            />
-          </View>
-
-          <View style={styles.formAction}>
-            <TouchableOpacity  
-              onPress={() => {
-                // handle onPress
-                handleSubmit()
-                // navigation.navigate('OTPScreen')
-              }}>
-              <View style={styles.btn}>
-                <Text style={styles.btnText}>Sign up</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-          
-          <Text style={styles.formFooter}>
-            Already have an account?
-              <Text style={{color: '#075eec'}} onPress={() => {navigation.navigate('Login')}} > Sign in</Text>
-          </Text>
-        </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }

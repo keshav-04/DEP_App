@@ -3,23 +3,51 @@ import { SafeAreaView, View, Text, Image, StyleSheet, TextInput, TouchableOpacit
 import { useRoute } from '@react-navigation/native';
 import {
   register_route,
+  sendotp_route,
   verifyotp_route,
 } from "../utilities/API_routes";
 
-export default function OTPScreen({ navigation, route: x }) {
+export default function OTPScreen({route, navigation}) {
   // const { form, setForm } = x.params
+  const {email, name, phoneNumber} = route.params;
   const [form, setForm] = useState({
-    name: '',
-    email: '',
-    phoneNumber: '',
-    otp: '',
-    isOtpSent: true,
-    isLoading: false,
+    name: name,
+    email: email,
+    phoneNumber: phoneNumber,
+    otp: ''
   });
+  const [isOtpSent, setIsOtpSent] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // const route = useRoute();
-  // const source = route.params?.source || 'Unknown';
-// karan
+  const handleSubmit = async () => {
+    
+    // setForm({ ...form, isLoading: true });
+    setIsLoading(true);
+    
+    try {
+      const { email } = form;
+      const data = { email };
+      
+      const response = await fetch(sendotp_route, {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      const receivedData = await response.json();
+      setIsLoading(false);
+      if (receivedData.status === 'false') {
+        Alert.alert('Error', 'Failed to send OTP');
+      } else {
+        Alert.alert('Success', 'OTP sent successfully to your email.\nPlease check Spam too.');
+        setIsOtpSent(true);
+      }
+    } catch (err) {
+      setIsLoading(false);
+      Alert.alert('Error', err.message);
+    }
+  };
   const signUp = async () => {
     
     const { name, email, phoneNumber } = form;
@@ -31,9 +59,17 @@ export default function OTPScreen({ navigation, route: x }) {
     };
 
     try {
-      const response = await axios.post(register_route, user);
+      const response = await fetch(register_route, {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      // console.log("respomse", response)
+      const receivedData = await response.json();
 
-      if (response.data.status === 'false') {
+      if (receivedData.status === 'false') {
         Alert.alert('Error', response.data.error);
       } else {
         Alert.alert('Success', 'Account created successfully!');
@@ -45,30 +81,38 @@ export default function OTPScreen({ navigation, route: x }) {
   };
 
   const handleOtpSubmit = async () => {
-    setForm({ ...form, isLoading: true });
-
+    setIsLoading(true);
     try {
       const { email, otp } = form;
       const data = { email, otp };
+      3
 
-      const response = await axios.post(verifyotp_route, data);
-
-      if (response.data.status === 'false') {
-        Alert.alert('Error', response.data.error);
+       const response = await fetch(verifyotp_route, {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      // console.log("respomse", response)
+      const receivedData = await response.json();
+      setIsLoading(false);
+      if (receivedData.status === 'false') {
+        Alert.alert('Error', receivedData.error);
+        // navigation.navigate('Signup')
       } else {
-        if (source === 'SignUp') {
-          await signUp();
-        } else {
+        // if (source === 'SignUp') {
+          // await signUp();
           Alert.alert('Success', 'Logged in successfully!');
-         navigation.navigate('HomeScreen'); // navigate to home
-        }
-        setForm({ ...form, isOtpSent: false });
+         navigation.navigate('homeScreen'); // navigate to home
+        
       }
     } catch {
       Alert.alert('Error', 'Failed to verify OTP. Please try again later.');
+      navigation.navigate('SignUp');
+    
     }
 
-    setForm({ ...form, isLoading: false });
   };
 
   return (
@@ -84,8 +128,8 @@ export default function OTPScreen({ navigation, route: x }) {
               style={styles.inputFeild}
               placeholder="********"
               placeholderTextColor="#ccc"
-              value={form}
-              onChangeText={(val) => setForm({form: val})}
+              value={form.otp}
+              onChangeText={(otp) => setForm({...form, otp })}
             />
           </View>
 
@@ -96,14 +140,14 @@ export default function OTPScreen({ navigation, route: x }) {
 								handleOtpSubmit()
               }}>
               <View style={styles.btn}>
-                <Text style={styles.btnText}>Submit</Text>
+                <Text style={styles.btnText}>Verify OTP</Text>
               </View>
             </TouchableOpacity>
           </View>
           
           <Text style={styles.formFooter}>
             Didn't receive OTP code?
-          	<Text style={{color:'#075eec'}} onPress={() => {navigation.navigate('Signup')}}> Resend OTP </Text>
+          	<Text style={{color:'#075eec'}} onPress={handleSubmit}> Resend OTP </Text>
           </Text>
           <Text style={styles.formFooter}>
             Don't have an account? 
