@@ -64,19 +64,23 @@ export default function OTPScreen({route, navigation}) {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(user)
       });
       // console.log("respomse", response)
       const receivedData = await response.json();
 
       if (receivedData.status === 'false') {
-        Alert.alert('Error', response.data.error);
+        Alert.alert('Error', receivedData.error);
+        navigation.navigate('Signup')
+        throw new Error();
       } else {
         Alert.alert('Success', 'Account created successfully!');
-        navigation.navigate('HomeScreen'); // navigate to home
+        navigation.navigate('homeScreen'); // navigate to home
       }
     } catch (err) {
       Alert.alert('Error', 'Failed to create an account. Please try again later.');
+      navigation.navigate('Signup')
+      throw new Error();
     }
   };
 
@@ -102,14 +106,14 @@ export default function OTPScreen({route, navigation}) {
         // navigation.navigate('Signup')
       } else {
         // if (source === 'SignUp') {
-          // await signUp();
+          await signUp();
           Alert.alert('Success', 'Logged in successfully!');
          navigation.navigate('homeScreen'); // navigate to home
         
       }
     } catch {
       Alert.alert('Error', 'Failed to verify OTP. Please try again later.');
-      navigation.navigate('SignUp');
+      navigation.navigate('Signup');
     
     }
 
