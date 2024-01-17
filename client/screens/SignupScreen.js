@@ -4,17 +4,15 @@ import {
   sendotp_route,
 } from "../utilities/API_routes";
 
-export default function SignUp({ navigation, route: x }) {
-  const { form, setForm } = x.params
-  // const { form, setForm } = route.params || {};
-  // const [form, setForm] = useState({
-  //   name: '',
-  //   email: '',
-  //   phoneNumber: '',
-  //   otp: '',
-  //   isOtpSent: false,
-  //   isLoading: false,
-  // });
+export default function SignUp({ navigation }) {
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phoneNumber: '',
+    otp: '',
+    isOtpSent: false,
+    isLoading: false,
+  });
 
   const handleValidation = () => {
     const { name, email, phoneNumber } = form;

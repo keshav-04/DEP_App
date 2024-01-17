@@ -6,16 +6,15 @@ import {
   verifyotp_route,
 } from "../utilities/API_routes";
 
-export default function OTPScreen({ navigation, route: x }) {
-  const { form, setForm } = x.params
-  // const [form, setForm] = useState({
-  //   name: '',
-  //   email: '',
-  //   phoneNumber: '',
-  //   otp: '',
-  //   isOtpSent: true,
-  //   isLoading: false,
-  // });
+export default function OTPScreen({ navigation }) {
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phoneNumber: '',
+    otp: '',
+    isOtpSent: true,
+    isLoading: false,
+  });
 
   const route = useRoute();
   const source = route.params?.source || 'Unknown';
