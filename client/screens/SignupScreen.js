@@ -2,9 +2,9 @@ import React, {useState} from 'react';
 import { SafeAreaView, View, Text, Image, StyleSheet, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native';
 // import axios from 'axios';
 import {
-  sendotp_route,
+  sendotp_route, get_profile_route
 } from "../utilities/API_routes";
-import { useRoute } from "@react-navigation/native";
+// import { useRoute } from "@react-navigation/native";
 
 export default function SignUp({ navigation }) {
   // const { form, setForm } = x.params
@@ -18,7 +18,7 @@ export default function SignUp({ navigation }) {
     isLoading: false,
   });
 
-  const _route = useRoute();
+  // const _route = useRoute();
    
   const [isLoading, setisLoading] = useState(false);
 
@@ -27,7 +27,12 @@ export default function SignUp({ navigation }) {
     if (email === '') {
       Alert.alert('Error', 'Email is required!');
       return false;
-    } else if (name === '') {
+    }
+    else if (!/^[a-zA-Z0-9._-]+@iitrpr\.ac\.in$/.test(email)) {
+      Alert.alert('Error', 'Invalid email address or not from iitrpr.ac.in domain!');
+      return false;
+    }
+    else if (name === '') {
       Alert.alert('Error', 'Name is required!');
       return false;
     } else if (phoneNumber === '') {
@@ -43,9 +48,25 @@ export default function SignUp({ navigation }) {
   const handleSubmit = async () => {
     if (!handleValidation()) return;
     
+
     // setForm({ ...form, isLoading: true });
     setisLoading(true);
-    
+    try {
+      const response = await fetch(get_profile_route  + `/${form.email}`, {
+        method: 'GET'
+      });
+      // console.log("respomse", response)
+      const receivedData = await response.json();
+      if(receivedData.ok === true)
+      {
+        Alert.alert('Error', 'Email already exists');
+        return;
+      }
+      
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
+
     try {
       const { email } = form;
       const data = { email };
@@ -68,7 +89,7 @@ export default function SignUp({ navigation }) {
       } else {
         Alert.alert('Success', 'OTP sent successfully to your email.\nPlease check Spam too.');
         setForm({ ...form, isOtpSent: true });
-        navigation.navigate('OTPScreen', {...form});
+        navigation.navigate('OTPScreen', {...form, source:"signup"});
         setForm({ ...form, name: '', email: '', phoneNumber: '', otp: '', isOtpSent: false});
       }
     } catch (err) {

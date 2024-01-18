@@ -21,11 +21,17 @@ const ProfileScreen = ({ route, navigation }) => {
   });
 
   const handleValidation = () => {
-    const { name, email, phoneNumber } = form;
+    const { name, email, phoneNumber } = userProfile;
     if (email === '') {
       Alert.alert('Error', 'Email is required!');
       return false;
-    } else if (name === '') {
+    }
+    else  if (!/^[a-zA-Z0-9._-]+@iitrpr\.ac\.in$/.test(email)) {
+      Alert.alert('Error', 'Invalid email address or not from iitrpr.ac.in domain!');
+      // setUserProfile({...userProfile, email:""})
+      return false;
+    }
+    else if (name === '') {
       Alert.alert('Error', 'Name is required!');
       return false;
     } else if (phoneNumber === '') {
@@ -33,6 +39,7 @@ const ProfileScreen = ({ route, navigation }) => {
       return false;
     } else if (!/^\d{10}$/.test(phoneNumber)) {
       Alert.alert('Error', 'Phone number should have exactly 10 digits!');
+      // setUserProfile({...userProfile, phoneNumber:""})
       return false;
     }
     return true;
@@ -42,13 +49,13 @@ const ProfileScreen = ({ route, navigation }) => {
     setEdit(true);
   };
 
-  const handleSavePress = () => {
-    if (!handleValidation()) {
-      setEdit(false);
-    }
-    else
-      return;
-  };
+  // const handleSavePress = () => {
+  //   if (!handleValidation()) {
+  //     setEdit(false);
+  //   }
+  //   else
+  //     return;
+  // };
 
   // useEffect(() => {
     const fetchData = async() => {
@@ -94,7 +101,7 @@ useFocusEffect(
 // const [loading, setLoading] = useState(false);
 
 const handleSave = async() => {
- 
+  if(!handleValidation()) return;
   setEdit(false);
   // console.log("USERPROFILE: ", userProfile);
   try {
@@ -144,7 +151,7 @@ const handleSave = async() => {
         </View>
         <View style={styles.profileContainer}>
           <Input
-            label="Name"
+            label="Name*"
             value={userProfile.name}
             leftIcon={<Icon name="user" type="font-awesome" />}
             disabled={!edit}
@@ -152,14 +159,14 @@ const handleSave = async() => {
             />
           <Input
             keyboardType='numeric'
-            label="Phone Number"
+            label="Phone Number*"
             value={userProfile.phoneNumber}
             leftIcon={<Icon name="phone" type="font-awesome" />}
             disabled={!edit}
             onChangeText={(text) => setUserProfile({ ...userProfile, phoneNumber: text })}
             />
           <Input
-            label="Email"
+            label="Email*"
             value={userProfile.email}
             leftIcon={<Icon name="envelope" type="font-awesome" />}
             disabled={true}
@@ -177,7 +184,7 @@ const handleSave = async() => {
             value={userProfile.batch}
             leftIcon={<Icon name="graduation-cap" type="font-awesome" />}
             disabled={!edit}
-            onChangeText={(text) => setUserProfile({ ...userProfile, ba: text })}
+            onChangeText={(text) => setUserProfile({ ...userProfile, batch: text })}
             />
           {edit ? (
             <Button
@@ -193,7 +200,7 @@ const handleSave = async() => {
               />
               )}
         </View>
-        <Text style={{color: '#075eec'}} onPress={() => {navigation.navigate('homeScreen', {email:email_})}} >Home</Text>
+        <Text style={{color: '#075eec', alignItems: 'center'}} onPress={() => {navigation.navigate('homeScreen', {email:email_})}} >Home</Text>
       </ScrollView>
     </SafeAreaView>
   );

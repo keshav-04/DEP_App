@@ -74,7 +74,10 @@ app.post("/sendotp", (req, res) => {
   console.log("A");
   const email = req.body.email;
   if (!email) {
-    return resjson({ status: "false", error: "Email is required" });
+    return res.json({ status: "false", error: "Email is required" });
+  }
+   else if (!/^[a-zA-Z0-9._-]+@iitrpr\.ac\.in$/.test(email)) {
+    return res.json({status:"false", error: "('Error', 'Invalid email address or not from iitrpr.ac.in domain!'"});
   }
 
   const { otp, timestamp } = generateOtp();

@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View, Text, Image, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
-import { useRoute } from '@react-navigation/native';
+// import { useRoute } from '@react-navigation/native';
 import {
   register_route,
   sendotp_route,
@@ -9,7 +9,8 @@ import {
 
 export default function OTPScreen({route, navigation}) {
   // const { form, setForm } = x.params
-  const {email, name, phoneNumber} = route.params;
+  const {email, name, phoneNumber, source} = route.params;
+  console.log(name, phoneNumber);
   const [form, setForm] = useState({
     name: name,
     email: email,
@@ -19,9 +20,25 @@ export default function OTPScreen({route, navigation}) {
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const [showResendNow, setShowResendNow] = useState(false);
+  const resendTime = 60000; 
+  useEffect(() => {
+    // Set a timer to toggle the state after 1 minute (60000 milliseconds)
+    const timerId = setTimeout(() => {
+      setShowResendNow(true);
+    }, resendTime);
+
+    // Clear the timer if the component unmounts before it fires
+    return () => clearTimeout(timerId);
+  }, []); // Empty dependency array ensures this effect runs only once on mount
+
   const handleSubmit = async () => {
     
     // setForm({ ...form, isLoading: true });
+    setShowResendNow(false);
+    const timerId = setTimeout(() => {
+      setShowResendNow(true);
+    }, resendTime);
     setIsLoading(true);
     
     try {
@@ -75,7 +92,7 @@ export default function OTPScreen({route, navigation}) {
         throw new Error();
       } else {
         Alert.alert('Success', 'Account created successfully!');
-        navigation.navigate('homeScreen', {email}); // navigate to home
+        // navigation.navigate('homeScreen', {email}); // navigate to home
       }
     } catch (err) {
       Alert.alert('Error', 'Failed to create an account. Please try again later.');
@@ -89,7 +106,7 @@ export default function OTPScreen({route, navigation}) {
     try {
       const { email, otp } = form;
       const data = { email, otp };
-      3
+      
 
        const response = await fetch(verifyotp_route, {
         method: 'POST', 
@@ -105,16 +122,26 @@ export default function OTPScreen({route, navigation}) {
         Alert.alert('Error', receivedData.error);
         // navigation.navigate('Signup')
       } else {
-        // if (source === 'SignUp') {
-          await signUp();
+        console.log("HEEEE")
+        if(source === "login")
+        {
           Alert.alert('Success', 'Logged in successfully!');
+        }
+        else if (source === "signup") {
+          await signUp();
+        }
+        // if (source === 'SignUp') {
          navigation.navigate('homeScreen', {email}); // navigate to home
         
       }
     } catch {
       Alert.alert('Error', 'Failed to verify OTP. Please try again later.');
-      navigation.navigate('Signup');
-    
+      if (source === 'login') {
+        navigation.navigate('Login');
+      }
+      else if (source === 'signup') {
+        navigation.navigate('Signup');
+      }
     }
 
   };
@@ -130,7 +157,7 @@ export default function OTPScreen({route, navigation}) {
 							secureTextEntry={true}
 							keyboardType='numeric'
               style={styles.inputFeild}
-              placeholder="********"
+              placeholder="******"
               placeholderTextColor="#ccc"
               value={form.otp}
               onChangeText={(otp) => setForm({...form, otp })}
@@ -148,11 +175,16 @@ export default function OTPScreen({route, navigation}) {
               </View>
             </TouchableOpacity>
           </View>
-          
-          <Text style={styles.formFooter}>
-            Didn't receive OTP code?
-          	<Text style={{color:'#075eec'}} onPress={handleSubmit}> Resend OTP </Text>
-          </Text>
+          {
+            showResendNow ? (
+              <Text style={styles.formFooter}>
+                Didn't receive OTP code?
+                <Text style={{color:'#075eec'}} onPress={handleSubmit}> Resend OTP </Text>
+              </Text>
+            ) : (
+              <Text style={styles.formFooter}> Resend OTP in a minute </Text>
+            )
+          }
           <Text style={styles.formFooter}>
             Don't have an account? 
               <Text style={{color: '#075eec'}} onPress={() => {navigation.navigate('Signup')}} > Sign up</Text>

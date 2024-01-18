@@ -25,11 +25,11 @@ export default function HomeScreen({ route, navigation}) {
 
         <View >
           <Text style={styles.footer}>
+          <Text style={{color: '#075eec'}} onPress={() => {navigation.navigate('profileScreen', {email_:email})}} >Profile </Text>
               <Text style={{color: '#075eec'}} onPress={() => {navigation.navigate('Login')}} >Logout </Text>
 							from profile
           </Text>
         </View>
-        <Text style={{color: '#075eec'}} onPress={() => {navigation.navigate('profileScreen', {email_:email})}} >Profile </Text>
         
       </View>
     </SafeAreaView>

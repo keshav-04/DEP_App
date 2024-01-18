@@ -1,5 +1,9 @@
 import React, {useState} from 'react';
 import { SafeAreaView, View, Text, Image, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
+import {
+  sendotp_route, get_profile_route
+} from "../utilities/API_routes";
+// import { useRoute } from "@react-navigation/native";
 
 export default function Login({ navigation }) {
   const [form, setForm] = useState({
@@ -9,10 +13,18 @@ export default function Login({ navigation }) {
     isLoading: false,
   });
 
+  // const _route = useRoute();
+
+  const [isLoading, setisLoading] = useState(false);
+
   const handleValidation = () => {
     const { email } = form;
     if (email === '') {
       Alert.alert('Error', 'Email is required!');
+      return false;
+    }
+    else if (!/^[a-zA-Z0-9._-]+@iitrpr\.ac\.in$/.test(email)) {
+      Alert.alert('Error', 'Invalid email address or not from iitrpr.ac.in domain!');
       return false;
     }
     return true;
@@ -21,24 +33,56 @@ export default function Login({ navigation }) {
   const handleSubmit = async () => {
     if (!handleValidation()) return;
 
-    setForm({ ...form, isLoading: true });
+    // setForm({ ...form, isLoading: true });
+    setisLoading(true);
+
+    try {
+      const response = await fetch(get_profile_route  + `/${form.email}`, {
+        method: 'GET'
+      });
+      // console.log("respomse", response)
+      const receivedData = await response.json();
+      if(receivedData.ok === false)
+      {
+        Alert.alert('Error', 'Email does not exist');
+        return;
+      }
+      
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
 
     try {
       const { email } = form;
       const data = { email };
 
-      const response = await axios.post(sendotp_route, data);
+      console.log("here46")
+      // const response = await axios.post(sendotp_route, data);
+      const response = await fetch(sendotp_route, {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      // console.log("respomse", response)
+      const receivedData = await response.json();
 
-      if (response.status !== 200) {
+      setisLoading(false);
+
+      if (receivedData.status === 'false') {
         Alert.alert('Error', 'Failed to send OTP');
       } else {
         Alert.alert('Success', 'OTP sent successfully to your email.\nPlease check Spam too.');
-        navigation.navigate('OTPScreen');
+        setForm({ ...form, isOtpSent: true });
+        navigation.navigate('OTPScreen', {...form, source:"login"});
+        setForm({ ...form, email: '', otp: '', isOtpSent: false});
+        console.log(email, "email");
       }
 
-      setForm({ ...form, isOtpSent: true });
+      // setForm({ ...form, isOtpSent: true });
     } catch (err) {
-      Alert.alert('Error', 'Failed to login. Please try again later.');
+      Alert.alert('Error', err.message);
     }
 
     setForm({ ...form, isLoading: false });
