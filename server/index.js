@@ -33,10 +33,10 @@ app.use(cors());
 const User = require("./src/models/user.js");
 
 //routes
-// const profileRoutes = require('./src/routes/profileRoute.js');
+const profileRoutes = require('./src/routes/profileRoute.js');
 
 //profile Routes
-// app.use("/profile", profileRoutes);
+app.use("/profile", profileRoutes);
 
 const transporter = nodemailer.createTransport({
   // host: 'smtp-mail.outlook.com',

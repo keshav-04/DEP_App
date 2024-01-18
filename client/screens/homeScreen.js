@@ -1,10 +1,17 @@
 import React, {useState} from 'react';
 import { SafeAreaView, View, Text, Image, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { Icon } from 'react-native-elements';
 
-export default function HomeScreen({ navigation}) {
-
+export default function HomeScreen({ route, navigation}) {
+  const { email } = route.params;
+  console.log('home' + email);
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#bdf'}}>
+      <View style={styles.headerContainer}>
+      <TouchableOpacity onPress={() => {navigation.navigate('profileScreen')}}>
+        <Icon name="user" type="font-awesome" size={30} color="#fff" />
+      </TouchableOpacity>
+    </View>
       <View style= {styles.container}>
         <View style={styles.header}>
 
@@ -22,6 +29,8 @@ export default function HomeScreen({ navigation}) {
 							from profile
           </Text>
         </View>
+        <Text style={{color: '#075eec'}} onPress={() => {navigation.navigate('profileScreen', {email_:email})}} >Profile </Text>
+        
       </View>
     </SafeAreaView>
   );
@@ -35,6 +44,12 @@ const styles = StyleSheet.create({
   },
   header: {
     marginVertical: 360,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingRight: 20,
   },
   title: {
     fontSize: 30,

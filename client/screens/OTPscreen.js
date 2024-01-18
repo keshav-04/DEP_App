@@ -75,7 +75,7 @@ export default function OTPScreen({route, navigation}) {
         throw new Error();
       } else {
         Alert.alert('Success', 'Account created successfully!');
-        navigation.navigate('homeScreen'); // navigate to home
+        navigation.navigate('homeScreen', {email}); // navigate to home
       }
     } catch (err) {
       Alert.alert('Error', 'Failed to create an account. Please try again later.');
@@ -108,7 +108,7 @@ export default function OTPScreen({route, navigation}) {
         // if (source === 'SignUp') {
           await signUp();
           Alert.alert('Success', 'Logged in successfully!');
-         navigation.navigate('homeScreen'); // navigate to home
+         navigation.navigate('homeScreen', {email}); // navigate to home
         
       }
     } catch {

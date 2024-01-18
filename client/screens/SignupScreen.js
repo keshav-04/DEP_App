@@ -69,6 +69,7 @@ export default function SignUp({ navigation }) {
         Alert.alert('Success', 'OTP sent successfully to your email.\nPlease check Spam too.');
         setForm({ ...form, isOtpSent: true });
         navigation.navigate('OTPScreen', {...form});
+        setForm({ ...form, name: '', email: '', phoneNumber: '', otp: '', isOtpSent: false});
       }
     } catch (err) {
       // setisLoading(false);
@@ -144,6 +145,7 @@ export default function SignUp({ navigation }) {
               <TouchableOpacity  
                 onPress={() => {
                   // handle onPress
+
                   handleSubmit()
                 }}>
                 <View style={styles.btn}>

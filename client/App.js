@@ -3,15 +3,19 @@ import { useState } from 'react';
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-// import { createDrawerNavigator } from '@react-navigation/drawer';
 import Login from './screens/LoginScreen';
 import SignUp from './screens/SignupScreen';
 import OTPScreen from './screens/OTPscreen';  
 import HomeScreen from './screens/homeScreen';
 import Profile from './screens/profileScreen';
- 
+
 const Stack = createNativeStackNavigator();
+
+// import { createDrawerNavigator } from '@react-navigation/drawer';
 // const Drawer = createDrawerNavigator();
+
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+const Tab = createBottomTabNavigator();
 
 function App() {
   // const [form, setForm] = useState({
@@ -31,7 +35,7 @@ function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login" screenOptions={{headerShown: false}}>
+      <Stack.Navigator initialRouteName="Signup" screenOptions={{headerShown: false}}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen
           name="Signup"
