@@ -1,8 +1,9 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View, Text, Image, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 import {
   sendotp_route, get_profile_route
 } from "../utilities/API_routes";
+import { useIsFocused } from '@react-navigation/native';
 // import { useRoute } from "@react-navigation/native";
 
 export default function Login({ navigation }) {
@@ -29,6 +30,15 @@ export default function Login({ navigation }) {
     }
     return true;
   }
+
+  // const isFocused = useIsFocused();
+
+  // useEffect(() => {
+  //   // Clear the form fields when returning to this screen
+  //   if (isFocused && form.isOtpSent) {
+  //     setForm({ ...form, email: '', otp: '', isOtpSent: false });
+  //   }
+  // }, [isFocused, form.isOtpSent]);
   
   const handleSubmit = async () => {
     if (!handleValidation()) return;
@@ -77,6 +87,7 @@ export default function Login({ navigation }) {
         setForm({ ...form, isOtpSent: true });
         navigation.navigate('OTPScreen', {...form, source:"login"});
         setForm({ ...form, email: '', otp: '', isOtpSent: false});
+        // setForm((form)=>form.email = "")
         console.log(email, "email");
       }
 
@@ -87,6 +98,7 @@ export default function Login({ navigation }) {
 
     setForm({ ...form, isLoading: false });
   };
+
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#bdf'}}>

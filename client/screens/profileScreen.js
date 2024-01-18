@@ -200,7 +200,9 @@ const handleSave = async() => {
               />
               )}
         </View>
-        <Text style={{color: '#075eec', alignItems: 'center'}} onPress={() => {navigation.navigate('homeScreen', {email:email_})}} >Home</Text>
+        <View>
+          <Icon name="home" type="font-awesome" size={40} padding={10} onPress={() => {navigation.navigate('homeScreen', {email:email_})}} />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -225,6 +227,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     elevation: 3,
+    marginBottom: 3,
   },
   title: {
     marginTop: 10,
@@ -238,6 +241,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#2ecc71',
     marginTop: 20,
   },
+  // profileFooter: {
+  //   flex: 1,
+  //   fontSize: 20,
+  //   fontWeight: 'bold',
+  //   color: '#000000',
+  //   textAlign: 'center',
+  //   letterSpacing: 0.15,
+  //   marginTop: -15
+  // },
 });
 
 export default ProfileScreen;

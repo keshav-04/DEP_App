@@ -10,7 +10,7 @@ import {
 export default function OTPScreen({route, navigation}) {
   // const { form, setForm } = x.params
   const {email, name, phoneNumber, source} = route.params;
-  console.log(name, phoneNumber);
+  // console.log(name, phoneNumber);
   const [form, setForm] = useState({
     name: name,
     email: email,
@@ -21,7 +21,7 @@ export default function OTPScreen({route, navigation}) {
   const [isLoading, setIsLoading] = useState(false);
 
   const [showResendNow, setShowResendNow] = useState(false);
-  const resendTime = 60000; 
+  const resendTime = 3000; 
   useEffect(() => {
     // Set a timer to toggle the state after 1 minute (60000 milliseconds)
     const timerId = setTimeout(() => {
@@ -65,6 +65,11 @@ export default function OTPScreen({route, navigation}) {
       Alert.alert('Error', err.message);
     }
   };
+
+  const login = async () => {
+    Alert.alert('Success', 'Logged in successfully!');
+  }
+
   const signUp = async () => {
     
     const { name, email, phoneNumber } = form;
@@ -125,7 +130,7 @@ export default function OTPScreen({route, navigation}) {
         console.log("HEEEE")
         if(source === "login")
         {
-          Alert.alert('Success', 'Logged in successfully!');
+          await login();
         }
         else if (source === "signup") {
           await signUp();
