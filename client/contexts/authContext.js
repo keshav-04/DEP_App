@@ -23,10 +23,13 @@ export const AuthContextProvider = ({ children }) => {
     }); 
 
     useEffect(() => {
-        const user = JSON.parse(AsyncStorage.getItem('user')); 
-        if (user) {
-            dispatch({type: "LOGIN", payload: user});
-        }
+        const fetchLocalUser = async() => {
+            const user = await JSON.parse(AsyncStorage.getItem('user'));            
+            if (user) {
+                dispatch({type: "LOGIN", payload: user});
+            }
+        };
+        fetchLocalUser();
     }, []);
 
     // console.log('AuthContext State: ', state);
