@@ -15,6 +15,7 @@ const Stack = createNativeStackNavigator();
 // const Drawer = createDrawerNavigator();
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { AuthContextProvider } from './contexts/authContext';
 const Tab = createBottomTabNavigator();
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
   }
 
   return (
+  <AuthContextProvider>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Signup" screenOptions={{headerShown: false}}>
         <Stack.Screen name="Login" component={Login} />
@@ -58,6 +60,7 @@ function App() {
         </Drawer.Navigator> */}
       </Stack.Navigator>
     </NavigationContainer>
+  </AuthContextProvider>    
   );
 }
 
