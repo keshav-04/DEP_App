@@ -1,4 +1,4 @@
-const generateToken = require('../utils/generateToken.js');
+// const generateToken = require('../utils/generateToken.js');
 const User = require('../models/user.js');
 const registerController = async (req, res) => {
     const { name, email, phoneNumber } = req.body;
