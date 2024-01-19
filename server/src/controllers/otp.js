@@ -1,4 +1,4 @@
-const {generateOtp} = require("../utils/generateOtp");
+const {generateOtp} = require("../utils/generateOtp.js");
 const otpMap = new Map();   //use database instead of map
 const nodemailer = require("nodemailer");
 require("dotenv").config();
