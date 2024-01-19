@@ -155,7 +155,7 @@ export default function SignUp({ navigation }) {
               <TextInput
                 keyboardType='phone-pad'
                 style={styles.inputFeild}
-                placeholder="+91 9876543210"
+                placeholder="9876543210"
                 placeholderTextColor="#ccc"
                 value={form.phoneNumber}
                 onChangeText={(phoneNumber) => setForm({ ...form, phoneNumber })}

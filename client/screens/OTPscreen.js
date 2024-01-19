@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View, Text, Image, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 // import { useRoute } from '@react-navigation/native';
 import {
+  login_route,
   register_route,
   sendotp_route,
   verifyotp_route,
@@ -21,7 +22,7 @@ export default function OTPScreen({route, navigation}) {
   const [isLoading, setIsLoading] = useState(false);
 
   const [showResendNow, setShowResendNow] = useState(false);
-  const resendTime = 3000; 
+  const resendTime = 60000; 
   useEffect(() => {
     // Set a timer to toggle the state after 1 minute (60000 milliseconds)
     const timerId = setTimeout(() => {
@@ -67,7 +68,39 @@ export default function OTPScreen({route, navigation}) {
   };
 
   const login = async () => {
-    Alert.alert('Success', 'Logged in successfully!');
+    const { email } = form;
+
+    const user = {
+      email
+    };
+
+    try {
+      const response = await fetch(login_route, {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(user)
+      });
+      // console.log("respomse", response)
+      const receivedData = await response.json();
+
+      if (receivedData.status === 'false') {
+        Alert.alert('Error', receivedData.error);
+        navigation.navigate('Login');
+        setForm({ ...form, name: '', email: '', phoneNumber: '', otp: '', isOtpSent: false});
+        throw new Error();
+      } else {
+        Alert.alert('Success', 'Logged in successfully!');
+        // navigation.navigate('homeScreen', {email}); // navigate to home
+      }
+    } catch (err) {
+      Alert.alert('Error', 'Failed to log in.');
+      navigation.navigate('Login');
+      setForm({ ...form, name: '', email: '', phoneNumber: '', otp: '', isOtpSent: false});
+      throw new Error();
+    }
+    
   }
 
   const signUp = async () => {
@@ -93,7 +126,8 @@ export default function OTPScreen({route, navigation}) {
 
       if (receivedData.status === 'false') {
         Alert.alert('Error', receivedData.error);
-        navigation.navigate('Signup')
+        navigation.navigate('Signup');
+        setForm({ ...form, name: '', email: '', phoneNumber: '', otp: '', isOtpSent: false});
         throw new Error();
       } else {
         Alert.alert('Success', 'Account created successfully!');
@@ -101,7 +135,8 @@ export default function OTPScreen({route, navigation}) {
       }
     } catch (err) {
       Alert.alert('Error', 'Failed to create an account. Please try again later.');
-      navigation.navigate('Signup')
+      navigation.navigate('Signup');
+      setForm({ ...form, name: '', email: '', phoneNumber: '', otp: '', isOtpSent: false});
       throw new Error();
     }
   };
@@ -137,15 +172,19 @@ export default function OTPScreen({route, navigation}) {
         }
         // if (source === 'SignUp') {
          navigation.navigate('homeScreen', {email}); // navigate to home
-        
+         setForm({ ...form, name: '', email: '', phoneNumber: '', otp: '', isOtpSent: false});
       }
     } catch {
       Alert.alert('Error', 'Failed to verify OTP. Please try again later.');
       if (source === 'login') {
         navigation.navigate('Login');
+        setForm({ ...form, name: '', email: '', phoneNumber: '', otp: '', isOtpSent: false});
+
       }
       else if (source === 'signup') {
         navigation.navigate('Signup');
+        setForm({ ...form, name: '', email: '', phoneNumber: '', otp: '', isOtpSent: false});
+
       }
     }
 
