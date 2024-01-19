@@ -2,12 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View, Text, Image, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 // import { useRoute } from '@react-navigation/native';
 import {
+  login_route,
   register_route,
   sendotp_route,
   verifyotp_route,
 } from "../utilities/API_routes";
+import { useAuthContext } from '../hooks/useAuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function OTPScreen({route, navigation}) {
+
+  const { user, dispatch } = useAuthContext(); 
+
   // const { form, setForm } = x.params
   const {email, name, phoneNumber, source} = route.params;
   // console.log(name, phoneNumber);
@@ -67,7 +73,35 @@ export default function OTPScreen({route, navigation}) {
   };
 
   const login = async () => {
-    Alert.alert('Success', 'Logged in successfully!');
+    try {
+      const response = await fetch(login_route, {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email })
+      });
+      // console.log("respomse", response)
+      const receivedData = await response.json();
+
+      if (receivedData.status === 'false') {
+        Alert.alert('Error', receivedData.error);
+        navigation.navigate('login')
+        throw new Error();
+      } else {
+
+        Alert.alert('Success', 'Logged in successfully!');
+
+        dispatch({ type: 'LOGIN', payload: receivedData.resUser });
+        await AsyncStorage.setItem('user', JSON.stringify(receivedData.resUser));
+
+        // navigation.navigate('homeScreen', {email}); // navigate to home
+      }
+    } catch (err) {
+      Alert.alert('Error', 'Failed to login. Please try again later.');
+      navigation.navigate('login')
+      throw new Error();
+    }
   }
 
   const signUp = async () => {
@@ -96,7 +130,14 @@ export default function OTPScreen({route, navigation}) {
         navigation.navigate('Signup')
         throw new Error();
       } else {
+
         Alert.alert('Success', 'Account created successfully!');
+
+    
+
+        dispatch({ type: 'LOGIN', payload: receivedData.resUser });
+        await AsyncStorage.setItem('user', JSON.stringify(receivedData.resUser));
+
         // navigation.navigate('homeScreen', {email}); // navigate to home
       }
     } catch (err) {
