@@ -24,9 +24,9 @@ export const AuthContextProvider = ({ children }) => {
 
     useEffect(() => {
         const fetchLocalUser = async() => {
-            const user = await JSON.parse(AsyncStorage.getItem('user'));            
+            const getUser = await AsyncStorage.getItem('user');            
             if (user) {
-                dispatch({type: "LOGIN", payload: user});
+                dispatch({type: "LOGIN", payload: getUser});
             }
         };
         fetchLocalUser();

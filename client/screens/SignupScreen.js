@@ -4,9 +4,19 @@ import { SafeAreaView, View, Text, Image, StyleSheet, TextInput, TouchableOpacit
 import {
   sendotp_route, get_profile_route
 } from "../utilities/API_routes";
+import { useAuthContext } from '../hooks/useAuthContext';
 // import { useRoute } from "@react-navigation/native";
 
 export default function SignUp({ navigation }) {
+  
+  const { user, dispatch } = useAuthContext();
+  
+  useEffect(() => {
+    if (user) {
+      navigation.navigate('homeScreen');
+    } 
+  }, []);
+  
   // const { form, setForm } = x.params
   // const { form, setForm } = route.params || {};
   const [form, setForm] = useState({

@@ -14,6 +14,12 @@ export default function OTPScreen({route, navigation}) {
 
   const { user, dispatch } = useAuthContext(); 
 
+  useEffect(() => {
+    if (user) {
+      navigation.navigate('homeScreen');
+    } 
+  }, []);
+
   // const { form, setForm } = x.params
   const {email, name, phoneNumber, source} = route.params;
   // console.log(name, phoneNumber);
@@ -92,8 +98,8 @@ export default function OTPScreen({route, navigation}) {
 
         Alert.alert('Success', 'Logged in successfully!');
 
-        dispatch({ type: 'LOGIN', payload: receivedData.resUser });
-        await AsyncStorage.setItem('user', JSON.stringify(receivedData.resUser));
+        dispatch({ type: 'LOGIN', payload: 'USER_LOGGED_IN' });
+        await AsyncStorage.setItem('user', 'USER_LOGGED_IN');
 
         // navigation.navigate('homeScreen', {email}); // navigate to home
       }
@@ -135,8 +141,8 @@ export default function OTPScreen({route, navigation}) {
 
     
 
-        dispatch({ type: 'LOGIN', payload: receivedData.resUser });
-        await AsyncStorage.setItem('user', JSON.stringify(receivedData.resUser));
+        dispatch({ type: 'LOGIN', payload: 'USER_LOGGED_IN' });
+        await AsyncStorage.setItem('user', 'USER_LOGGED_IN');
 
         // navigation.navigate('homeScreen', {email}); // navigate to home
       }

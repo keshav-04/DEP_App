@@ -4,9 +4,18 @@ import { View, ScrollView, StyleSheet, SafeAreaView, Alert } from 'react-native'
 import { Button, Input, Text, Icon } from 'react-native-elements';
 import { update_profile_route, get_profile_route } from "../utilities/API_routes";
 import { useFocusEffect } from '@react-navigation/native';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 
 const ProfileScreen = ({ route, navigation }) => {
+  
+  const { user, dispatch } = useAuthContext();
+  useEffect(() => {
+    if (!user) {
+      navigation.navigate('Login');
+    } 
+  }, []);
+  
   const {email_} = route.params;
   console.log(email_);
   const [edit, setEdit] = useState(false);

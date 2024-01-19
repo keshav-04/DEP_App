@@ -4,15 +4,27 @@ import {
   sendotp_route, get_profile_route
 } from "../utilities/API_routes";
 import { useIsFocused } from '@react-navigation/native';
+import { useAuthContext } from '../hooks/useAuthContext';
 // import { useRoute } from "@react-navigation/native";
 
 export default function Login({ navigation }) {
+  
+  const { user, dispatch } = useAuthContext();
+  
+  useEffect(() => {
+    if (user) {
+      navigation.navigate('homeScreen');
+    } 
+  }, []); 
+  
+  
   const [form, setForm] = useState({
     email: '',
     otp: '',
     isOtpSent: false,
     isLoading: false,
   });
+
 
   // const _route = useRoute();
 
