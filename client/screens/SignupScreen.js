@@ -121,7 +121,7 @@ export default function SignUp({ navigation }) {
 
           <View style={styles.form}>
             <View style={styles.input}>
-              <Text style={styles.inputLabel}>Name</Text>
+              <Text style={styles.inputLabel}>Name<Text style={styles.mandatory}>*</Text></Text>
 
               <TextInput
                 autoCapitalize='words'
@@ -135,7 +135,7 @@ export default function SignUp({ navigation }) {
             </View>
 
             <View style={styles.input}>
-              <Text style={styles.inputLabel}>Email address</Text>
+              <Text style={styles.inputLabel}>Email address<Text style={styles.mandatory}>*</Text></Text>
 
               <TextInput
                 autoCapitalize='none'
@@ -150,7 +150,7 @@ export default function SignUp({ navigation }) {
             </View>
 
             <View style={styles.input}>
-              <Text style={styles.inputLabel}>Phone number</Text>
+              <Text style={styles.inputLabel}>Phone number<Text style={styles.mandatory}>*</Text></Text>
 
               <TextInput
                 keyboardType='phone-pad'
@@ -187,6 +187,9 @@ export default function SignUp({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  mandatory:{
+    color: 'red'
+  },
   container: {
     padding: 24,
     flex: 1,

@@ -120,7 +120,7 @@ export default function Login({ navigation }) {
 
         <View style={styles.form}>
           <View style={styles.input}>
-            <Text style={styles.inputLabel}>Email address</Text>
+            <Text style={styles.inputLabel}>Email address<Text style={styles.mandatory}>*</Text></Text>
 
             <TextInput
               autoCapitalize='none'
@@ -158,6 +158,9 @@ export default function Login({ navigation }) {
 
 
 const styles = StyleSheet.create({
+  mandatory:{
+    color: 'red'
+  },
   container: {
     padding: 24,
     flex: 1,

@@ -195,7 +195,7 @@ export default function OTPScreen({route, navigation}) {
       <View style= {styles.container}>
         <View style={styles.form}>
           <View style={styles.input}>
-            <Text style={styles.inputLabel}>OTP</Text>
+            <Text style={styles.inputLabel}>OTP<Text style={styles.mandatory}>*</Text></Text>
 
             <TextInput
 							secureTextEntry={true}
@@ -241,6 +241,9 @@ export default function OTPScreen({route, navigation}) {
 
 
 const styles = StyleSheet.create({
+  mandatory:{
+    color: 'red'
+  },
   container: {
     padding: 24,
     flex: 1,
