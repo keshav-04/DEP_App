@@ -1,9 +1,9 @@
 # Mobile App with OTP Authentication
 This is a group project
-  1. Aryaman Gupta
+  1. Keshav Aggarwal
   2. Atharva Mulay
   3. Harshit Kumar Ravi
-  4. Keshav Aggarwal
+  4. Aryaman Gupta
      
 ## Overview
 
